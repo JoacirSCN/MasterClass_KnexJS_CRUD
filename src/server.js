@@ -22,7 +22,7 @@ app.use((error, req, res, next) => {
       message: error.message,
     });
   }
-
+  console.log(error)
 	// SERVIDOR
   return res.status(500).json({
     status: "error",
