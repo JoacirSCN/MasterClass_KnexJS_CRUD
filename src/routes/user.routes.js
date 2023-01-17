@@ -7,5 +7,7 @@ const usersRoutes = Router();
 
 // Eu quero executar usersController.create na raiz
 usersRoutes.post('/', usersController.create);
+usersRoutes.put('/:id', usersController.update);
+
 
 module.exports = usersRoutes;
