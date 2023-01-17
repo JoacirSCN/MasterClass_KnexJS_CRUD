@@ -31,7 +31,6 @@ class UsersController {
     
     const users = await knex('users').select('*').where({ id });
     const user = users.pop();
-    console.log(user)
 
     if(!user) {
       throw new AppError('Usuário não encontrado.');
