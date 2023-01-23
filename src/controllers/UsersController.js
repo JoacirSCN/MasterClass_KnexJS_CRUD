@@ -8,13 +8,11 @@ class UsersController {
     const hashedPassword = await hash(password, 8);
 
     // Selecionar todos os usuarios onde o email é igual ao email do request.body
-    const checkEmailExists = await knex('users').select('*');
+    const checkEmailExists = await knex('users').select('*').where({email});
   
-    checkEmailExists.filter(checkEmailExist => {
-      if(checkEmailExist.email === email){
-        throw new AppError('Este e-mail já está em uso.');;
-      }
-    });
+    if(checkEmailExists.length > 0){
+      throw new AppError('Este e-mail já está em uso.');;
+    }
 
     await knex("users").insert({
       name,
@@ -29,22 +27,20 @@ class UsersController {
     const { name, email, password, old_password } = req.body;
     const { id } = req.params;
     
-    const users = await knex('users').select('*').where({ id });
-    const user = users.pop();
+    const user = await knex('users').select('*').where({ id });
 
-    if(!user) {
+    if(user.length === 0) {
       throw new AppError('Usuário não encontrado.');
     }
 
-    const userEmail  = await knex('users').select('*').where({ email })
-    const userWithUpdatedEmail = userEmail.pop();
+    const userWithUpdatedEmail  = await knex('users').select('*').where({ email })
 
-    if(userWithUpdatedEmail && userWithUpdatedEmail.id !== user.id) {
+    if(userWithUpdatedEmail[0] && userWithUpdatedEmail[0].id !== user[0].id) {
       throw new AppError('Este e-mail já está em uso.');
     }
     
-    user.name = name ?? user.name;
-    user.email = email ?? user.email;
+    user[0].name = name ?? user[0].name;
+    user[0].email = email ?? user[0].email;
 
     if(password && !old_password) {
       throw new AppError('Você precisa informar a senha antiga para definir a nova senha!')
@@ -61,9 +57,9 @@ class UsersController {
     }
 
     await knex("users").where({id}).update({
-      name: user.name,
-      email: user.email,
-      password: user.password,
+      name: user[0].name,
+      email: user[0].email,
+      password: user[0].password,
       updated_at: new Date()
     })
 
