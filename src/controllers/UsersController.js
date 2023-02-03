@@ -22,14 +22,14 @@ class UsersController {
       password: hashedPassword,
     });
 
-    res.status(201).json();
+    return res.status(201).json();
   }
 
   async update(req, res) {
     const { name, email, password, old_password } = req.body;
-    const { id } = req.params;
+    const user_id = req.user.id;
     
-    const users = await knex('users').select('*').where({ id });
+    const users = await knex('users').where('id', user_id)
     const user = users.pop();
 
     if(!user) {
@@ -60,14 +60,14 @@ class UsersController {
       user.password = await hash(password, 8);
     }
 
-    await knex("users").where({id}).update({
+    await knex("users").where('id', user_id).update({
       name: user.name,
       email: user.email,
       password: user.password,
       updated_at: new Date()
     })
 
-    res.status(201).json();
+    return res.status(201).json();
   }
 }
 
