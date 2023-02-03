@@ -1,5 +1,6 @@
 require('express-async-errors')
 const AppError = require("./utils/AppError");
+const uploadConfig = require("./configs/upload");
 
 const sqliteConnection = require('./database/sqlite');
 sqliteConnection();
@@ -9,6 +10,8 @@ const routes = require('./routes');
 
 const app = express();
 app.use(express.json());
+
+app.use("/files", express.static(uploadConfig.UPLOADS_FOLDER));
 
 // As rotas estão aqui
 app.use(routes);
