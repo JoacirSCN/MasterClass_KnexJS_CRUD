@@ -31,7 +31,7 @@ app.use((error, req, res, next) => {
 	// SERVIDOR
   return res.status(500).json({
     status: "error",
-    message: "Interval server error",
+    message: `Interval server error ${error}`,
   });
 });
 
